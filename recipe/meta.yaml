@@ -7,14 +7,13 @@ package:
   version: {{ version }}
 
 source:
-  #url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name | lower }}-{{ version }}.tar.gz
   url: https://github.com/movermeyer/backports.datetime_fromisoformat/archive/refs/tags/v{{ version}}.tar.gz
   sha256: a0db0e99bdc33f7ebce1b73e19fca613f964b50d627bc69d11e90750dbdfe068
 
 build:
   number: 0
-  script: {{ PYTHON }} -m pip install . -vv
-
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+ 
 requirements:
   build:
     - {{ compiler('c') }}
@@ -25,19 +24,29 @@ requirements:
     - python
 
 test:
+  source_files:
+    - tests
   imports:
     - backports
     - backports.datetime_fromisoformat
   commands:
     - pip check
+    - pytest -vv .
   requires:
     - pip
+    - pytest
+    - pytz
 
 about:
   home: https://github.com/movermeyer/backports.datetime_fromisoformat
   summary: Backport of Python 3.7's datetime.fromisoformat
   license: MIT
   license_file: LICENSE
+  license_family: MIT
+  description: |
+    A backport of Python 3.11's datetime.fromisoformat methods to earlier versions of Python 3.
+  doc_url: https://github.com/movermeyer/backports.datetime_fromisoformat
+  dev_url: https://github.com/movermeyer/backports.datetime_fromisoformat
 
 extra:
   recipe-maintainers:
